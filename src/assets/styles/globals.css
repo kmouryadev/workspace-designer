@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --color-page: #f7f4ee;
+  --color-panel: #ffffff;
+  --color-ink: #17212b;
+  --color-ink-soft: #5e6a72;
+  --color-line: #e6dfd2;
+  --color-navy: #17263f;
+  --color-gold: #a9722a;
+  --color-gold-soft: #f7ecd7;
+  --color-gold-softer: #fbf4e6;
+  --color-gold-text: #7a4e14;
+  --color-error-text: #8a2f12;
+  --color-error-bg: #fdece6;
+  --color-error-border: #e7b4a3;
+  --color-error-field: #b4361b;
+  --color-info-text: #1f3f6b;
+  --color-info-bg: #eaf1fa;
+  --color-success-text: #1e6b45;
+  --color-success-bg: #e3f2e9;
+  --color-amber: #f2c35b;
+}
+
+@theme inline {
+  --color-page: var(--color-page);
+  --color-panel: var(--color-panel);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-line: var(--color-line);
+  --color-navy: var(--color-navy);
+  --color-gold: var(--color-gold);
+  --color-gold-soft: var(--color-gold-soft);
+  --color-gold-softer: var(--color-gold-softer);
+  --color-gold-text: var(--color-gold-text);
+  --color-error-text: var(--color-error-text);
+  --color-error-bg: var(--color-error-bg);
+  --color-error-border: var(--color-error-border);
+  --color-error-field: var(--color-error-field);
+  --color-info-text: var(--color-info-text);
+  --color-info-bg: var(--color-info-bg);
+  --color-success-text: var(--color-success-text);
+  --color-success-bg: var(--color-success-bg);
+  --color-amber: var(--color-amber);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes drop-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stage-item-enter {
+  animation: drop-fade 320ms ease-out both;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

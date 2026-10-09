@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Stepper } from "@/components/ui/Stepper";
 import { OrderSummary } from "@/components/organisms/OrderSummary";
 import { decodeSetup } from "@/lib/share";
-import { DURATIONS } from "@/lib/duration";
+import { DURATIONS, durationFactor } from "@/lib/duration";
 import { validateCheckout, FIELD_LABELS, type CheckoutForm, type DurationKey, type FormErrors } from "@/lib/validate";
 import { useWorkspace } from "@/store/workspace";
 import { CheckmarkIcon, ChevronLeftIcon } from "@/assets/icons";
@@ -28,10 +28,7 @@ const EMPTY_FORM: CheckoutForm = {
 };
 
 const TODAY = new Date().toISOString().slice(0, 10);
-
-function makeRequestId() {
-  return `MR-${Math.floor(10000 + Math.random() * 89999)}`;
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
 export function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -39,6 +36,8 @@ export function CheckoutContent() {
   const reset = useWorkspace((state) => state.reset);
   const loadSetup = useWorkspace((state) => state.loadSetup);
   const goToSection = useWorkspace((state) => state.goToSection);
+  const catalog = useWorkspace((state) => state.catalog)!; // non-null: CatalogGate guarantees this
+  const { DESKS, CHAIRS, ALL_ITEMS } = catalog;
   const router = useRouter();
 
   const [form, setForm] = useState<CheckoutForm>(EMPTY_FORM);
@@ -58,6 +57,15 @@ export function CheckoutContent() {
     router.push("/");
   };
 
+  const deskItem = DESKS.find((candidate) => candidate.id === desk);
+  const chairItem = CHAIRS.find((candidate) => candidate.id === chair);
+  const accessoriesTotalK = Object.entries(qty).reduce((sum, [itemId, quantity]) => {
+    const item = ALL_ITEMS.find((candidate) => candidate.id === itemId);
+    return item ? sum + item.priceK * quantity : sum;
+  }, 0);
+  const monthlyTotalK = (deskItem?.priceK ?? 0) + (chairItem?.priceK ?? 0) + accessoriesTotalK;
+  const periodTotalK = Math.round(monthlyTotalK * durationFactor(form.duration));
+
   const submit = async () => {
     const found = validateCheckout(form);
     setErrors(found);
@@ -66,13 +74,31 @@ export function CheckoutContent() {
 
     setSubmitting(true);
     try {
-      await new Promise<void>((resolve, reject) => {
-        setTimeout(() => {
-          if (Math.random() < 0.08) reject(new Error("network"));
-          else resolve();
-        }, 500);
+      const response = await fetch(`${API_URL}/requests`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: form.fullName,
+          email: form.email,
+          whatsapp: form.whatsapp,
+          location: form.location,
+          startDate: form.startDate,
+          duration: form.duration,
+          message: form.message,
+          setupDesk: desk,
+          setupChair: chair,
+          setupItems: qty,
+          monthlyTotalK,
+          periodTotalK,
+        }),
       });
-      setRequestId(makeRequestId());
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const created = await response.json();
+      setRequestId(created.id);
     } catch {
       setSendFailed(true);
     } finally {
@@ -263,4 +289,3 @@ export function CheckoutContent() {
     </main>
   );
 }
-

@@ -9,6 +9,7 @@ import { decodeSetup } from "@/lib/share";
 import { DURATIONS, durationFactor } from "@/lib/duration";
 import { validateCheckout, FIELD_LABELS, type CheckoutForm, type DurationKey, type FormErrors } from "@/lib/validate";
 import { useWorkspace } from "@/store/workspace";
+import { saveMyRequest } from "@/lib/myRequests";
 import { CheckmarkIcon, ChevronLeftIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
@@ -91,6 +92,15 @@ export function CheckoutContent() {
       });
 
       setRequestId(response.data.id);
+      saveMyRequest({
+        id: response.data.id,
+        fullName: form.fullName,
+        location: form.location,
+        startDate: form.startDate,
+        duration: form.duration,
+        periodTotalK,
+        createdAt: response.data.createdAt,
+      });
     } catch {
       setSendFailed(true);
     } finally {

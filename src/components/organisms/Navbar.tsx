@@ -19,9 +19,14 @@ export function Navbar() {
           </div>
         </Link>
 
-        <Button variant="outline-light" size="sm" onClick={reset}>
-          Reset
-        </Button>
+        <div className="flex items-center gap-3">
+          <Link href="/request" className="text-[13px] font-semibold text-white/80 hover:text-white">
+            My Requests
+          </Link>
+          <Button variant="outline-light" size="sm" onClick={reset}>
+            Reset
+          </Button>
+        </div>
       </div>
     </header>
   );

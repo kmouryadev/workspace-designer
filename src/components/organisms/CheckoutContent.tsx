@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Stepper } from "@/components/ui/Stepper";
 import { OrderSummary } from "@/components/organisms/OrderSummary";
@@ -74,31 +75,22 @@ export function CheckoutContent() {
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${API_URL}/requests`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: form.fullName,
-          email: form.email,
-          whatsapp: form.whatsapp,
-          location: form.location,
-          startDate: form.startDate,
-          duration: form.duration,
-          message: form.message,
-          setupDesk: desk,
-          setupChair: chair,
-          setupItems: qty,
-          monthlyTotalK,
-          periodTotalK,
-        }),
+      const response = await axios.post(`${API_URL}/requests`, {
+        fullName: form.fullName,
+        email: form.email,
+        whatsapp: form.whatsapp,
+        location: form.location,
+        startDate: form.startDate,
+        duration: form.duration,
+        message: form.message,
+        setupDesk: desk,
+        setupChair: chair,
+        setupItems: qty,
+        monthlyTotalK,
+        periodTotalK,
       });
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-
-      const created = await response.json();
-      setRequestId(created.id);
+      setRequestId(response.data.id);
     } catch {
       setSendFailed(true);
     } finally {
@@ -289,3 +281,4 @@ export function CheckoutContent() {
     </main>
   );
 }
+

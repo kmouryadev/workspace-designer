@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { addMonitor } from "@/data/items";
+import type { CatalogData } from "@/data/items";
+import { buildCatalog } from "@/data/items";
+import { fetchCatalog } from "@/lib/catalogApi";
 
 export type Step = "setup" | "accessories" | "summary";
 export type Notice = { type: "error" | "info"; text: string } | null;
@@ -22,6 +25,8 @@ type WorkspaceState = {
   qty: Record<string, number>;
   isAiViewOpen: boolean;
   notice: Notice;
+  catalog: CatalogData | null;
+  catalogError: string | null;
 };
 
 type WorkspaceActions = {
@@ -39,6 +44,7 @@ type WorkspaceActions = {
   dismissNotice: () => void;
   reset: () => void;
   loadSetup: (desk: string | null, chair: string | null, qty: Record<string, number>) => void;
+  loadCatalog: () => Promise<void>;
 };
 
 const STEP_ORDER: Step[] = ["setup", "accessories", "summary"];
@@ -56,6 +62,8 @@ const INITIAL_WORKSPACE_STATE: WorkspaceState = {
   qty: {},
   isAiViewOpen: false,
   notice: null,
+  catalog: null,
+  catalogError: null,
 };
 
 export const useWorkspace = create<WorkspaceState & WorkspaceActions>((set, get) => ({
@@ -126,4 +134,13 @@ export const useWorkspace = create<WorkspaceState & WorkspaceActions>((set, get)
   reset: () => set({ ...INITIAL_WORKSPACE_STATE, qty: {} }),
 
   loadSetup: (desk, chair, qty) => set({ desk, chair, qty }),
+
+  loadCatalog: async () => {
+    try {
+      const dtos = await fetchCatalog();
+      set({ catalog: buildCatalog(dtos), catalogError: null });
+    } catch (error) {
+      set({ catalogError: error instanceof Error ? error.message : "Failed to load catalog" });
+    }
+  },
 }));

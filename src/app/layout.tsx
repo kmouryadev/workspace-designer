@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
 import "@/assets/styles/globals.css";
 import { Navbar } from "@/components/organisms/Navbar";
+import { CatalogGate } from "@/components/organisms/CatalogGate";
 
 const heading = Plus_Jakarta_Sans({
   variable: "--font-heading",
@@ -31,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <Navbar />
-        {children}
+        <CatalogGate>{children}</CatalogGate>
       </body>
     </html>
   );

@@ -2,13 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { Art, RoomBackground } from "@/assets/art";
-import { ALL_ITEMS, COFFEE, MOTORCYCLES, RELAX_ZONE, STAGE, SURFBOARDS, stagePlacements } from "@/data/items";
+import { STAGE, stagePlacements } from "@/data/items";
 import { useWorkspace } from "@/store/workspace";
 import { WrenchIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
-
-const EXTRA_ITEMS = [...COFFEE, ...SURFBOARDS, ...MOTORCYCLES, ...RELAX_ZONE];
 
 export function Stage() {
   const desk = useWorkspace((state) => state.desk);
@@ -16,6 +14,9 @@ export function Stage() {
   const qty = useWorkspace((state) => state.qty);
   const isAiViewOpen = useWorkspace((state) => state.isAiViewOpen);
   const setAiViewOpen = useWorkspace((state) => state.setAiViewOpen);
+  const catalog = useWorkspace((state) => state.catalog)!; // non-null: CatalogGate guarantees this
+  const { ALL_ITEMS, COFFEE, MOTORCYCLES, RELAX_ZONE, SURFBOARDS } = catalog;
+  const EXTRA_ITEMS = [...COFFEE, ...SURFBOARDS, ...MOTORCYCLES, ...RELAX_ZONE];
   const aiViewToggleRef = useRef<HTMLButtonElement>(null);
   const backToRoomViewRef = useRef<HTMLButtonElement>(null);
   const isFirstRender = useRef(true);
@@ -29,7 +30,7 @@ export function Stage() {
     else aiViewToggleRef.current?.focus();
   }, [isAiViewOpen]);
 
-  const placements = stagePlacements(desk, chair, qty);
+  const placements = stagePlacements(desk, chair, qty, catalog);
   const chosenExtras = EXTRA_ITEMS.filter((item) => (qty[item.id] ?? 0) > 0);
 
   const chosenItemNames = [desk, chair]

@@ -1,6 +1,6 @@
 "use client";
 
-import { ALL_ITEMS, CHAIRS, DESKS, rp } from "@/data/items";
+import { rp } from "@/data/items";
 import { useWorkspace } from "@/store/workspace";
 import { QuantityStepper } from "@/components/ui/QuantityStepper";
 import { ItemRow } from "@/components/ui/ItemRow";
@@ -24,6 +24,9 @@ export function SummaryList() {
   const incMonitor = useWorkspace((state) => state.incMonitor);
   const decMonitor = useWorkspace((state) => state.decMonitor);
   const removeItem = useWorkspace((state) => state.removeItem);
+
+  const catalog = useWorkspace((state) => state.catalog)!; // non-null: CatalogGate guarantees this
+  const { ALL_ITEMS, CHAIRS, DESKS } = catalog;
 
   const deskItem = DESKS.find((candidate) => candidate.id === desk);
   const chairItem = CHAIRS.find((candidate) => candidate.id === chair);

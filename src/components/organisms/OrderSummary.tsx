@@ -1,8 +1,9 @@
 "use client";
 
-import { ALL_ITEMS, CHAIRS, DESKS, rp } from "@/data/items";
+import { rp } from "@/data/items";
 import { DURATIONS, durationFactor, durationUnit } from "@/lib/duration";
 import type { DurationKey } from "@/lib/validate";
+import { useWorkspace } from "@/store/workspace";
 import { ItemRow } from "@/components/ui/ItemRow";
 import { Heading, Typography } from "@/components/ui/Typography";
 
@@ -17,6 +18,9 @@ export function OrderSummary({
   qty: Record<string, number>;
   duration: DurationKey;
 }) {
+  const catalog = useWorkspace((state) => state.catalog)!; // non-null: CatalogGate guarantees this
+  const { ALL_ITEMS, CHAIRS, DESKS } = catalog;
+
   const deskItem = DESKS.find((candidate) => candidate.id === desk);
   const chairItem = CHAIRS.find((candidate) => candidate.id === chair);
   const accessoryRows = Object.entries(qty)

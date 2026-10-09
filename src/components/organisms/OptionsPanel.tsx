@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CHAIRS, COFFEE, DESKS, LIGHTS, MONITORS, MOTORCYCLES, PLANTS, RELAX_ZONE, SURFBOARDS, rp, totalMonthlyK } from "@/data/items";
+import { rp, totalMonthlyK } from "@/data/items";
 import { useWorkspace } from "@/store/workspace";
 import { SelectTile } from "@/components/ui/Tile";
 import { ToggleGrid } from "@/components/ui/ToggleGrid";
@@ -28,8 +28,11 @@ export function OptionsPanel() {
   const goBack = useWorkspace((state) => state.goBack);
   const router = useRouter();
 
+  const catalog = useWorkspace((state) => state.catalog)!; // non-null: CatalogGate guarantees this
+  const { DESKS, CHAIRS, MONITORS, LIGHTS, PLANTS, COFFEE, SURFBOARDS, MOTORCYCLES, RELAX_ZONE } = catalog;
+
   const hasDeskAndChair = Boolean(desk && chair);
-  const monthlyTotalK = totalMonthlyK(desk, chair, qty);
+  const monthlyTotalK = totalMonthlyK(desk, chair, qty, catalog);
 
   const nextLabel = step === "setup" ? "Next: Accessories" : step === "accessories" ? "Review Setup" : "Rent This Setup";
 

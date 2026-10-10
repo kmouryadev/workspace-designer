@@ -44,3 +44,5 @@ settings.json
 DESIGN.md
 AGENTS.md
 /workspace-designer-backend
+*storybook.log
+storybook-static

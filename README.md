@@ -37,6 +37,8 @@ The builder at `/` switches between three steps with state, so the stage and tot
 | State | Zustand (`src/store/workspace.ts`) |
 | HTTP client | axios (`src/lib/catalogApi.ts`, `src/lib/requestsApi.ts`) |
 | Backend | Separate Node/Express API — see `workspace-designer-backend` |
+| Testing | Vitest + React Testing Library (`tests/`) |
+| Component workshop | Storybook (`.storybook/`, `src/components/ui/*.stories.tsx`) |
 | Hosting | Vercel |
 
 ## Project structure
@@ -55,6 +57,13 @@ src/
   lib/                  catalogApi/requestsApi (backend calls), myRequests (localStorage
                         history), checkout validation, duration pricing, URL encoding
   store/                Zustand store for builder state and the fetched catalog
+tests/
+  lib/                  Unit tests for the lib/ utilities and backend API clients
+  data/                 Unit tests for the catalog/stage-placement/pricing logic
+  components/           Component tests (CheckoutContent, OptionsPanel, BuilderContent,
+                        CatalogGate, MyRequestsContent) with Testing Library
+  fixtures/             Shared sample catalog and Zustand store reset helper
+.storybook/              Storybook config, wired to the same Tailwind v4 setup as the app
 ```
 
 ## Getting started
@@ -75,6 +84,29 @@ To check a production build:
 npm run build
 npm start
 ```
+
+## Testing
+
+```bash
+npm test
+```
+
+Runs the Vitest suite once (`npm run test:watch` for watch mode). Covers
+checkout validation, pricing/stage-placement logic, the backend API
+clients (success, HTTP failure, network error, malformed data), and the
+CheckoutContent/OptionsPanel/BuilderContent/CatalogGate/MyRequestsContent
+components with React Testing Library. No backend needs to be running —
+all network calls are mocked.
+
+## Storybook
+
+```bash
+npm run storybook
+```
+
+Opens a workshop for the `src/components/ui/` primitives at
+[http://localhost:6006](http://localhost:6006). `npm run build-storybook`
+produces a static build in `storybook-static/`.
 
 ## Environment variables
 

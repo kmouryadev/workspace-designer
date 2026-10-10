@@ -6,11 +6,13 @@ export function RoomStage({
   chair,
   qty,
   catalog,
+  emptyDeskLabel = "No desk in this setup",
 }: {
   desk: string | null;
   chair: string | null;
   qty: Record<string, number>;
   catalog: CatalogData;
+  emptyDeskLabel?: string;
 }) {
   const { ALL_ITEMS, COFFEE, MOTORCYCLES, RELAX_ZONE, SURFBOARDS } = catalog;
   const EXTRA_ITEMS = [...COFFEE, ...SURFBOARDS, ...MOTORCYCLES, ...RELAX_ZONE];
@@ -57,7 +59,7 @@ export function RoomStage({
               height: `${(150 / STAGE.h) * 100}%`,
             }}
           >
-            No desk in this setup
+            {emptyDeskLabel}
           </div>
         )}
       </div>

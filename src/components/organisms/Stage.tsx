@@ -29,7 +29,7 @@ export function Stage() {
 
   return (
     <div className="relative">
-      <RoomStage desk={desk} chair={chair} qty={qty} catalog={catalog} />
+      <RoomStage desk={desk} chair={chair} qty={qty} catalog={catalog} emptyDeskLabel="Pick a desk to start" />
 
       <div
         role="group"
